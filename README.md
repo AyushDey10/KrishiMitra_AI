@@ -87,6 +87,27 @@ KrishiMitra_AI/
 ├── documentation/
 └── tests/
 ```
+### Required Model and Dataset Files
+
+The trained model and original dataset are not included in this Git repository because of their file sizes.
+
+Before running the application, obtain the following two files from the project team:
+
+1. `random_forest.joblib`
+2. `india_district_crop_dataset_1997_2015.csv`
+
+Place them in these exact locations:
+
+```text
+KrishiMitra_AI/
+├── models/
+│   └── random_forest.joblib
+└── data/
+    └── raw/
+        └── india_district_crop_dataset_1997_2015.csv
+```
+
+The application requires both files to load the trained model and calculate default input values from the dataset.
 
 ## Installation and Execution
 
