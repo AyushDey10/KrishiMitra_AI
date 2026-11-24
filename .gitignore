@@ -1,0 +1,30 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+
+# Machine learning artifacts
+*.pkl
+*.joblib
+
+# Data files
+data/raw/*
+data/processed/*
+
+# Exceptions: preserve folder structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
