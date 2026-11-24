@@ -259,7 +259,7 @@ if submitted:
         
         st.divider()
 
-        st.header("5. Indigenous Farming Practices")
+        st.header("6. Indigenous Farming Practices")
         st.caption(
             "Practice matching currently uses crop association only. "
             "Geographic and farm-condition matching is not yet implemented."
@@ -342,7 +342,7 @@ if submitted:
 
 st.divider()
 
-st.header("6. Model Explainability")
+st.header("7. Model Explainability")
 
 feature_importance = pd.read_csv(
     "documentation/feature_importance.csv"
