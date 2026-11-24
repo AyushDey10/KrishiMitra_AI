@@ -1,8 +1,8 @@
-from src.recommendation.practice_engine import (
-    get_practices_for_crops
-)
+
 import streamlit as st
 import pandas as pd
+
+from src.recommendation.practice_engine import get_practices_for_crops
 
 from src.data.preprocessing import (
     load_dataset,
@@ -18,12 +18,20 @@ from src.models.predict import (
 )
 
 
+# --------------------------------------------------
+# 1. PAGE CONFIGURATION
+# --------------------------------------------------
+
 st.set_page_config(
     page_title="KrishiMitra AI",
     page_icon="🌱",
     layout="wide"
 )
 
+
+# --------------------------------------------------
+# 2. LOAD MODEL AND REFERENCE VALUES
+# --------------------------------------------------
 
 @st.cache_resource
 def get_model():
@@ -35,19 +43,51 @@ def get_reference_values():
     df = load_dataset()
     X, y, metadata = prepare_dataset(df)
 
-    medians = X[SOIL_FEATURES + CLIMATE_FEATURES].median()
+    numerical_features = SOIL_FEATURES + CLIMATE_FEATURES
+
+    medians = X[numerical_features].median()
+    minimums = X[numerical_features].min()
+    maximums = X[numerical_features].max()
 
     seasons = sorted(X["season"].unique().tolist())
 
-    return medians, seasons
+    return medians, minimums, maximums, seasons
 
 
 model = get_model()
-medians, seasons = get_reference_values()
 
+medians, minimums, maximums, seasons = get_reference_values()
+
+
+# --------------------------------------------------
+# 3. INPUT VALIDATION
+# --------------------------------------------------
+
+def get_input_bounds(feature):
+    minimum = float(minimums[feature])
+    maximum = float(maximums[feature])
+
+    # Rainfall cannot be negative.
+    if feature == "rainfall_mm":
+        minimum = max(0.0, minimum)
+
+    # Percentage values must remain between 0 and 100.
+    if feature.endswith("_pct"):
+        minimum = max(0.0, minimum)
+        maximum = min(100.0, maximum)
+
+    return minimum, maximum
+
+
+# --------------------------------------------------
+# 4. DASHBOARD HEADER
+# --------------------------------------------------
 
 st.title("🌱 KrishiMitra AI")
-st.subheader("Intelligent Agricultural Decision Support System")
+
+st.subheader(
+    "Intelligent Agricultural Decision Support System"
+)
 
 st.write(
     "Explore historical crop patterns using soil and climate inputs."
@@ -59,14 +99,20 @@ st.info(
 )
 
 
+# --------------------------------------------------
+# 5. CROP PREDICTION INPUT FORM
+# --------------------------------------------------
 
 with st.form("crop_prediction_form"):
 
     st.header("1. Growing season")
 
-    season = st.selectbox("Select season", seasons)
+    season = st.selectbox(
+        "Select season",
+        seasons
+    )
 
-    # Start with dataset median values for all 31 numerical features.
+    # Start with dataset median values for all numerical features.
     input_data = medians.to_dict()
     input_data["season"] = season
 
@@ -82,19 +128,33 @@ with st.form("crop_prediction_form"):
         "humidity_pct",
     ]
 
+    # Essential inputs - first column.
     with col1:
+
         for feature in quick_features[:3]:
+
+            minimum, maximum = get_input_bounds(feature)
+
             input_data[feature] = st.number_input(
                 feature.replace("_", " ").title(),
+                min_value=minimum,
+                max_value=maximum,
                 value=float(medians[feature]),
                 step=0.1,
                 format="%.3f"
             )
 
+    # Essential inputs - second column.
     with col2:
+
         for feature in quick_features[3:]:
+
+            minimum, maximum = get_input_bounds(feature)
+
             input_data[feature] = st.number_input(
                 feature.replace("_", " ").title(),
+                min_value=minimum,
+                max_value=maximum,
                 value=float(medians[feature]),
                 step=0.1,
                 format="%.3f"
@@ -105,7 +165,10 @@ with st.form("crop_prediction_form"):
         "You can modify them in Advanced Settings."
     )
 
-    with st.expander("Advanced Settings — All soil and climate parameters"):
+    # Advanced soil and climate inputs.
+    with st.expander(
+        "Advanced Settings — All soil and climate parameters"
+    ):
 
         st.subheader("Soil parameters")
 
@@ -116,9 +179,14 @@ with st.form("crop_prediction_form"):
             if feature in quick_features:
                 continue
 
+            minimum, maximum = get_input_bounds(feature)
+
             with soil_columns[index % 2]:
+
                 input_data[feature] = st.number_input(
                     feature.replace("_", " ").title(),
+                    min_value=minimum,
+                    max_value=maximum,
                     value=float(medians[feature]),
                     step=0.1,
                     format="%.3f",
@@ -134,14 +202,21 @@ with st.form("crop_prediction_form"):
             if feature in quick_features:
                 continue
 
+            minimum, maximum = get_input_bounds(feature)
+
             with climate_columns[index % 2]:
+
                 input_data[feature] = st.number_input(
                     feature.replace("_", " ").title(),
+                    min_value=minimum,
+                    max_value=maximum,
                     value=float(medians[feature]),
                     step=0.1,
                     format="%.3f",
                     key=f"advanced_{feature}"
                 )
+
+    # Scenario simulator.
     st.header("3. Scenario Simulator")
 
     scenario_change = st.slider(
@@ -150,24 +225,33 @@ with st.form("crop_prediction_form"):
         max_value=50,
         value=0,
         step=5,
-        help="Test how changing rainfall affects the model's historical crop predictions."
+        help=(
+            "Test how changing rainfall affects the model's "
+            "historical crop predictions."
+        )
     )
+
     submitted = st.form_submit_button(
         "Predict Historical Crop Patterns",
         width="stretch"
     )
 
 
+# --------------------------------------------------
+# 6. PREDICTION AND SCENARIO ANALYSIS
+# --------------------------------------------------
 
 if submitted:
 
     try:
 
+        # Baseline prediction.
         results = predict_top_crops(
             model,
             input_data,
             top_n=3
         )
+
         # Create a modified input for rainfall scenario testing.
         scenario_input = input_data.copy()
 
@@ -186,6 +270,10 @@ if submitted:
         )
 
         st.divider()
+
+        # --------------------------------------------------
+        # 6A. PREDICTION RESULTS
+        # --------------------------------------------------
 
         st.header("4. Prediction results")
 
@@ -213,7 +301,11 @@ if submitted:
         st.bar_chart(
             chart_df["Historical pattern score (%)"]
         )
-        
+
+        # --------------------------------------------------
+        # 6B. SCENARIO COMPARISON
+        # --------------------------------------------------
+
         st.header("5. Scenario Comparison")
 
         baseline_df = pd.DataFrame(results)
@@ -255,11 +347,15 @@ if submitted:
             "crop patterns. They do not establish agronomic suitability, "
             "expected yield, profitability, or probability of crop success."
         )
-        
-        
+
         st.divider()
 
+        # --------------------------------------------------
+        # 6C. INDIGENOUS FARMING PRACTICES
+        # --------------------------------------------------
+
         st.header("6. Indigenous Farming Practices")
+
         st.caption(
             "Practice matching currently uses crop association only. "
             "Geographic and farm-condition matching is not yet implemented."
@@ -289,7 +385,10 @@ if submitted:
                     f"{practice['name']} — {practice['state']}"
                 ):
 
-                    st.write("**Region:**", practice["region"])
+                    st.write(
+                        "**Region:**",
+                        practice["region"]
+                    )
 
                     st.write(
                         "**Practice type:**",
@@ -334,11 +433,14 @@ if submitted:
                 "linked to these predicted crops in our knowledge base."
             )
 
-
     except Exception as error:
 
         st.error(f"Prediction failed: {error}")
 
+
+# --------------------------------------------------
+# 7. MODEL EXPLAINABILITY
+# --------------------------------------------------
 
 st.divider()
 
