@@ -1,0 +1,73 @@
+
+[
+  {
+    "id": "ITK001",
+    "name": "Panikheti System",
+    "region": "Northeast India",
+    "state": "Northeastern hill regions",
+    "practice_type": "Traditional water management",
+    "associated_crops": ["Rice"],
+    "description": "Water is diverted from upper agricultural terraces to lower terraces while maintaining the desired water level in each terrace.",
+    "purpose": [
+      "Manage rainwater",
+      "Support terrace rice cultivation",
+      "Help reduce soil erosion on hill slopes"
+    ],
+    "conditions": "Hilly terrain with terraced agricultural fields and a suitable water source.",
+    "limitations": "Requires suitable terrace layout, water availability and local water-management knowledge.",
+    "evidence_status": "Documented by ICAR",
+    "source": "https://www.icar.gov.in/sites/default/files/2025-12/Indian%20Farming%20July%202025%20Special%20Issue.pdf"
+  },
+  {
+    "id": "ITK002",
+    "name": "Apatani Rice-Fish Farming",
+    "region": "Ziro Valley",
+    "state": "Arunachal Pradesh",
+    "practice_type": "Integrated rice-fish farming",
+    "associated_crops": ["Rice"],
+    "description": "Rice cultivation is integrated with fish farming in terraces. Stream water is supplied through canals, and distant fields are connected using drainage pipes.",
+    "purpose": [
+      "Integrate crop and fish production",
+      "Manage water across terraced fields"
+    ],
+    "conditions": "Suitable local valley and terrace conditions, dependable water supply and appropriate fish-management practices.",
+    "limitations": "Requires suitable water infrastructure and knowledge of both rice and fish management.",
+    "evidence_status": "Documented by ICAR",
+    "source": "https://www.icar.gov.in/sites/default/files/2025-12/Indian%20Farming%20July%202025%20Special%20Issue.pdf"
+  },
+  {
+    "id": "ITK003",
+    "name": "Bamboo Drip Irrigation",
+    "region": "Jaintia Hills",
+    "state": "Meghalaya",
+    "practice_type": "Traditional irrigation",
+    "associated_crops": ["Arecanut", "Betelvine"],
+    "description": "Bamboo channels carry water from hill streams at higher elevations to agricultural fields on steep slopes.",
+    "purpose": [
+      "Distribute stream water",
+      "Support irrigation on steep terrain"
+    ],
+    "conditions": "Hilly terrain with an accessible stream and a suitable gravity-fed channel route.",
+    "limitations": "Depends on stream availability, terrain, channel maintenance and local construction knowledge.",
+    "evidence_status": "Documented by ICAR",
+    "source": "https://www.icar.gov.in/sites/default/files/2025-12/Indian%20Farming%20July%202025%20Special%20Issue.pdf"
+  },
+  {
+    "id": "ITK004",
+    "name": "Zabo Farming System",
+    "region": "Phek district",
+    "state": "Nagaland",
+    "practice_type": "Integrated farming and rainwater harvesting",
+    "associated_crops": ["Rice", "Vegetables"],
+    "description": "A traditional integrated farming system combining forest areas, rainwater harvesting ponds, agriculture, fishery and animal husbandry.",
+    "purpose": [
+      "Harvest and manage rainwater",
+      "Integrate different farm activities",
+      "Support soil and water conservation"
+    ],
+    "conditions": "Hilly landscape with suitable water-harvesting and integrated farming arrangements.",
+    "limitations": "Requires appropriate landscape conditions, water infrastructure and coordination of multiple farm activities.",
+    "evidence_status": "Documented by ICAR",
+    "source": "https://epubs.icar.org.in/index.php/IndFarm/article/view/116630"
+  }
+]
