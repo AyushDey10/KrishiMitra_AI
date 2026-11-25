@@ -33,6 +33,18 @@ class Settings:
         else None
     )
 
+    # Optional compact model artifacts for memory-constrained API deployment.
+    compact_arrays_path: Path | None = (
+        Path(os.environ["KRISHIMITRA_COMPACT_ARRAYS_PATH"])
+        if os.getenv("KRISHIMITRA_COMPACT_ARRAYS_PATH")
+        else None
+    )
+    compact_preprocessor_path: Path | None = (
+        Path(os.environ["KRISHIMITRA_COMPACT_PREPROCESSOR_PATH"])
+        if os.getenv("KRISHIMITRA_COMPACT_PREPROCESSOR_PATH")
+        else None
+    )
+
     # Number of crops returned when the client does not ask for a specific count.
     default_top_n: int = int(os.getenv("KRISHIMITRA_TOP_N", "3"))
 

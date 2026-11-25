@@ -1,11 +1,10 @@
-# KrishiMitra AI — API service dependencies
-#
-# The machine-learning stack (numpy, pandas, scikit-learn, joblib) is declared
-# in ../requirements.txt and is already installed in the project virtualenv.
-# This file adds only what the FastAPI service needs on top of it.
-#
-#   .venv/Scripts/python.exe -m pip install -r backend/requirements-api.txt
-
 fastapi==0.128.0
 uvicorn==0.54.0
 pydantic==2.12.4
+numpy==2.5.5
+pandas==3.1.1
+scipy==1.18.1
+scikit-learn==1.9.1
+joblib==1.6.0
+numba==0.68.1
+llvmlite==0.50.0

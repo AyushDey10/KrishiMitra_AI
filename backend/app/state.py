@@ -17,6 +17,7 @@ from src.recommendation.practice_engine import load_practices
 
 from .config import PROJECT_ROOT, settings
 from .services.field_meta import FIELD_META, OBSERVED_FIELDS
+from .services.compact_model import load_compact_model
 
 DOCS = PROJECT_ROOT / "documentation"
 
@@ -207,7 +208,23 @@ def load_state() -> dict:
 
     _apply_path_overrides()
 
-    model = predict_module.load_model()
+    compact_arrays = settings.compact_arrays_path
+    compact_preprocessor = settings.compact_preprocessor_path
+
+    if (compact_arrays is None) != (compact_preprocessor is None):
+        raise ValueError(
+            "Both compact model paths must be configured together."
+        )
+
+    if compact_arrays is not None and compact_preprocessor is not None:
+        model = load_compact_model(
+            compact_arrays,
+            compact_preprocessor,
+        )
+        print("KrishiMitra: loaded compact Random Forest model.")
+    else:
+        model = predict_module.load_model()
+        print("KrishiMitra: loaded original Random Forest model.")
 
     seasons = [
         str(value)
